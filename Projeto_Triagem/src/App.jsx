@@ -1,35 +1,78 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
 
 function App() {
-  const [count, setCount] = useState(0)
+  // Estado que controla onde estamos na árvore
+  const [etapa, setEtapa] = useState("q1");
+
+  // Estrutura da triagem
+  const triagem = {
+    perguntas: {
+      q1: {
+        texto: "Você possui EG?",
+        opcoes: [
+          { texto: "Sim", proximo: "q2" },
+          { texto: "Não", proximo: "r1" }
+        ]
+      },
+      q2: {
+        texto: "Qual tipo de EG?",
+        opcoes: [
+          { texto: "Tipo A", proximo: "r2" },
+          { texto: "Tipo B", proximo: "r3" }
+        ]
+      }
+    },
+    resultados: {
+      r1: {
+        titulo: "Atendimento padrão",
+        descricao: "Dirigir-se à unidade mais próxima."
+      },
+      r2: {
+        titulo: "Especialista A",
+        descricao: "Levar documentos médicos."
+      },
+      r3: {
+        titulo: "Especialista B",
+        descricao: "Necessário encaminhamento."
+      }
+    }
+  };
+
+  // Se for resultado
+  if (triagem.resultados[etapa]) {
+    const resultado = triagem.resultados[etapa];
+
+    return (
+      <div>
+        <h2>Resultado</h2>
+        <h3>{resultado.titulo}</h3>
+        <p>{resultado.descricao}</p>
+
+        <button onClick={() => setEtapa("q1")}>
+          Reiniciar
+        </button>
+      </div>
+    );
+  }
+
+  // Se for pergunta
+  const pergunta = triagem.perguntas[etapa];
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+    <div>
+      <h2>Triagem</h2>
+      <p>{pergunta.texto}</p>
+
+      {pergunta.opcoes.map((opcao, index) => (
+        <button
+          key={index}
+          onClick={() => setEtapa(opcao.proximo)}
+        >
+          {opcao.texto}
         </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+      ))}
+    </div>
+  );
 }
 
-export default App
+export default App;
